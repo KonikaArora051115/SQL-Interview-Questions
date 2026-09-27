@@ -1,0 +1,25 @@
+--Question-
+--A table named “famous” has two columns called user id and follower id. It represents each user ID has a particular follower ID. These follower IDs are also users of #Facebook / #Meta. Then, find the famous percentage of each user. 
+--Famous Percentage = number of followers a user has / total number of users on the platform.
+--𝐒𝐜𝐡𝐞𝐦𝐚 𝐚𝐧𝐝 𝐃𝐚𝐭𝐚𝐬𝐞𝐭:
+--CREATE TABLE famous (user_id INT, follower_id INT);
+--INSERT INTO famous VALUES
+--(1, 2), (1, 3), (2, 4), (5, 1), (5, 3), 
+--(11, 7), (12, 8), (13, 5), (13, 10), 
+--(14, 12), (14, 3), (15, 14), (15, 13);
+
+--Solution:
+with users as(
+        (select distinct User_Id from sql.default.famous) 
+        union
+        (select distinct Follower_Id from sql.default.famous)
+),
+
+Total_Users as (
+          select count(*) as total_users from users
+)
+
+select u.User_Id,round(((count(f.Follower_Id)*100.00)/(select * from Total_Users)),2)as Percentage 
+from users as u left join sql.default.famous as f on u.User_Id = f.User_Id
+group by u.User_Id
+order by User_Id
